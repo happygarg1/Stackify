@@ -1,48 +1,27 @@
-// To run this code you need to install the following dependencies:
-// npm install @google/genai mime
-// npm install -D @types/node
+const{
+    GoogleGenerativeAI,
+}=require("@google/generative-ai");
 
-import {
-  GoogleGenAI,
-} from '@google/genai';
+const apiKey=process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+const genAI=new GoogleGenerativeAI(apiKey);
 
-async function main() {
-  const ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-  });
-  const tools = [
-    {
-      googleSearch: {
-      }
-    },
-  ];
-  const config = {
-    thinkingConfig: {
-      thinkingBudget: -1,
-    },
-    tools,
-  };
-  const model = 'gemini-2.5-flash';
-  const contents = [
-    {
-      role: 'user',
-      parts: [
-        {
-          text: `INSERT_INPUT_HERE`,
-        },
-      ],
-    },
-  ];
+const model=genAI.getGenerativeModel({
+    model:"gemini-2.0-flash-exp",
+})
 
-  const response = await ai.models.generateContentStream({
-    model,
-    config,
-    contents,
-  });
-  let fileIndex = 0;
-  for await (const chunk of response) {
-    console.log(chunk.text);
-  }
-}
+const generationConfig={
+    temperature:1,
+    topP:0.95,
+    topK:40,
+    maxOutputTokens:8192,
+    responseMimeType:"text/plain",
+};
 
-main();
+   export const chatSession=model.startChat({
+        generationConfig,
+        history:[
+        ],
+    });
+
+    // const result=await chatSession.sendMessage("INSERT_INPUT_HERE");
+    // console.log(result.response.text());
