@@ -7,11 +7,15 @@ import { UserDetailContext } from './context/UserDetailContext'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { useConvex } from 'convex/react'
 import { api } from '@/convex/_generated/api'
+import { SidebarProvider } from '@/components/ui/sidebar'
+import AppSideBar from '@/components/custom/AppSideBar'
+import { ActionContext } from './context/ActionContext'
 
 
 const Provider = ({children}) => {
-    const [messages,setMessages]=useState();
+    const [messages,setMessages]=useState([]);
     const [userDetail,setUserDetail]=useState();
+    const [action,setAction]=useState();
     const convex=useConvex();
 
     useEffect(()=>{
@@ -34,15 +38,23 @@ const Provider = ({children}) => {
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_AUTH_CLIENT_ID_KEY}>
         <UserDetailContext.Provider value={{userDetail,setUserDetail}}>
         <MessagesContext.Provider value={{messages,setMessages}}>
+            <ActionContext.Provider value={{action,setAction}}>
             <NextThemesProvider 
             attribute="class"
             defaultTheme="dark"
             enableSystem
             disableTransitionOnchange
             >
-            <Header/>
-            {children}
+            
+            <SidebarProvider defaultOpen={false} className='flex flex-col'>
+                 <Header/>
+                 {children}
+                 <div className='absolute'>
+                    <AppSideBar/>
+                 </div> 
+            </SidebarProvider>
         </NextThemesProvider>
+        </ActionContext.Provider>
         </MessagesContext.Provider>
         </UserDetailContext.Provider>
         </GoogleOAuthProvider>

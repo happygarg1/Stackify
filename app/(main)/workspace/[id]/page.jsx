@@ -4,7 +4,7 @@ import React from 'react'
 
 const Workspace = () => {
   return (
-    <div className='p-10'>
+    <div className='p-3 pr-5 mt-3'>
       {/* Use grid-cols-10 for a total of 10 columns */}
       <div className='grid grid-cols-1 md:grid-cols-10 gap-7'>
         {/* ChatView takes 3 out of 10 columns (30%) */}

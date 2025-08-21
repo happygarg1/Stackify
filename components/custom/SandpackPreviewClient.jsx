@@ -1,0 +1,38 @@
+import { ActionContext } from "@/app/context/ActionContext";
+import { SandpackPreview, useSandpack } from "@codesandbox/sandpack-react";
+import React, { useContext, useEffect, useRef } from "react";
+
+function SandpackPreviewClient() {
+  const previewRef = useRef();
+  const { sandpack } = useSandpack();
+  const { action, setAction } = useContext(ActionContext);
+
+  useEffect(() => {
+    GetSandpackClient();
+  }, [sandpack && action]);
+
+  const GetSandpackClient = async () => {
+    const client = previewRef.current?.getClient();
+    if (client) {
+      console.log(client);
+      const result = await client.getCodeSandboxURL();
+      console.log(result);
+      if (action?.actionType == "deploy") {
+        setTimeout(() => {
+          window.open(result?.embedUrl, "_blank");
+        }, 2000);
+      } else if (action?.actionType == "export") {
+        window.open(result?.editorUrl);
+      }
+    }
+  };
+  return (
+    <SandpackPreview
+      ref={previewRef}
+      style={{ height: "80vh" }}
+      showNavigator={true}
+    />
+  );
+}
+
+export default SandpackPreviewClient;
